@@ -1,16 +1,15 @@
-
-import mongoose from "mongoose";
+const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 
 const BookingSchema = new Schema(
   {
-    room: {
+    room_id: [{
         type: mongoose.Schema.ObjectId,
         ref: 'Room',
         required: true
-    },
-    user: {
+    }],
+    user_id: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
         required: true
@@ -27,4 +26,4 @@ const BookingSchema = new Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("Booking", BookingSchema);
+module.exports =  mongoose.model("Booking", BookingSchema);

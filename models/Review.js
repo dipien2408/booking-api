@@ -9,12 +9,12 @@ const ReviewSchema = new Schema(
       minlength: [3, 'Must be three characters long'],
       required: [true, 'Text is required']
     },
-    room: {
+    room_id: {
       type: mongoose.Schema.ObjectId,
       ref: 'Room',
       required: true
     },
-    user: {
+    user_id: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
       required: true

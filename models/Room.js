@@ -1,5 +1,5 @@
 
-import mongoose from "mongoose";
+const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 
@@ -29,8 +29,8 @@ const RoomSchema = new Schema(
         type: String,
         required: true,
     },
-    roomNumbers: [{ number: Number, unavailableDates: {type: [Date]}}],
-    hotel: {
+    unavailableDates: {type: [Date]},
+    hotel_id: {
         type: mongoose.Schema.ObjectId,
         ref: 'Hotel',
         required: true
@@ -39,29 +39,31 @@ const RoomSchema = new Schema(
         type: Number,
         required: true,
     },
-    roomType: {
+    roomType_id: {
         type: mongoose.Schema.ObjectId,
         ref: 'RoomType',
         required: true
     },
-    
+    rating: {
+      type: Number,
+      min: 0,
+      max: 5,
+    },
+    status: {
+      type: String,
+      enum: ['Active', 'Inactive'],
+      default: 'Active'
+    },
+    created_by: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Room',
+    },
+    modified_by: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Room',
+    }
   },
   { timestamps: true }
 );
 
-PostSchema.virtual('reviews', {
-    ref: 'Review',
-    localField: '_id',
-    foreignField: 'room',
-    justOne: false,
-    count: true
-})
-
-PostSchema.virtual('bookings', {
-    ref: 'Booking',
-    localField: '_id',
-    foreignField: 'room',
-    justOne: false,
-    count: true
-})
-export default mongoose.model("Room", RoomSchema);
+module.exports = mongoose.model("Room", RoomSchema);

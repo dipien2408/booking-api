@@ -3,21 +3,8 @@
 const advancedResults = (
     model,
     populates,
-    visibility = { status: '', filter: '' }
   ) => async (req, res, next) => {
-    let query
-  
-    if (visibility.status == 'private') {
-      req.query.userId = req.user._id
-  
-      if (visibility.filter == 'user') {
-        req.query.userId = req.user._id
-        delete req.query.userId
-      }
-    } else if (visibility.status == 'public') {
-      req.query.status = 'public'
-    }
-  
+
     // Copy req.query
     const reqQuery = { ...req.query }
   

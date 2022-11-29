@@ -3,8 +3,6 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
 
-const uniqueValidator = require('mongoose-unique-validator')
-
 const Schema = mongoose.Schema
 
 const UserSchema = new Schema({
@@ -50,16 +48,6 @@ const UserSchema = new Schema({
 }, { toJSON: { virtuals: true }, toObject: { virtuals: true }, timestamps: true })
 
 UserSchema.index({userName: 'text'})
-
-UserSchema.virtual('bookings', {
-    ref: 'Booking',
-    localField: '_id',
-    foreignField: 'user',
-    justOne: false,
-    count: true
-})
-
-UserSchema.plugin(uniqueValidator, { message: '{PATH} already exists.' })
 
 // Encrypt Password
 UserSchema.pre('save', async function (next) {

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const uniqueValidator = require('mongoose-unique-validator')
 
 const Schema = mongoose.Schema
 
@@ -18,10 +17,21 @@ const RoomTypeSchema = new Schema(
       minlength: [3, 'Description must be three characters long'],
       required: [true, 'Description is required'],
     },
+    status: {
+      type: String,
+      enum: ['Active', 'Inactive'],
+      default: 'Active'
+    },
+    created_by: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Room',
+    },
+    modified_by: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Room',
+    }
   },
   { timestamps: true }
 )
-
-RoomTypeSchema.plugin(uniqueValidator, { message: '{PATH} already exists.' })
 
 module.exports = mongoose.model('RoomType', RoomTypeSchema)

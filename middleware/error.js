@@ -1,4 +1,4 @@
-const ErrorResponse = require('../utils/errorResponse')
+const ErrorResponse = require('../utilities/errorResponse')
 
 const errorHandler = (err, req, res, next) => {
   let error = {
