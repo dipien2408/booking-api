@@ -1,6 +1,6 @@
 const asyncHandler = require('../middleware/async')
 const ErrorResponse = require('../utilities/errorResponse')
-const Permission = require('../utilities/permission')
+const permission = require('../utilities/permission')
 const Review = require('../models/Review')
 const Room = require('../models/Room')
 
@@ -15,8 +15,8 @@ exports.getReviews = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/reviews/:roomId/
 // @access  Public
 exports.getReviewsByRoomId = asyncHandler(async (req, res, next) => {
-  const reviews = await Review.find({ room_Id: req.params.roomId })
-    .populate('user_Id')
+  const reviews = await Review.find({ room_id: req.params.roomId })
+    .populate('user_id')
     .sort('-createdAt')
 
   if (!reviews) {
@@ -56,8 +56,8 @@ exports.createReview = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/reviews/:id
 // @access  Private or Private/Admin
 exports.updateReview = asyncHandler(async (req, res, next) => {
-  Permission(req, res, next, Review, req.params.id)
-  let review = await Review.findById(req.params.id).populate('room_Id')
+  permission(req, res, next, Review, req.params.id)
+  let review = await Review.findById(req.params.id).populate('room_id')
 
   if (!review) {
     return next(
@@ -85,7 +85,7 @@ exports.updateReview = asyncHandler(async (req, res, next) => {
 // @route   DELETE /api/v1/reviews/:id
 // @access  Private or Private/Admin
 exports.deleteReview = asyncHandler(async (req, res, next) => {
-  Permission(req, res, next, Review, req.params.id)
+  permission(req, res, next, Review, req.params.id)
   let review = await Review.findById(req.params.id).populate('room_id')
 
   if (!review) {

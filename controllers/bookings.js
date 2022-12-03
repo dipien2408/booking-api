@@ -1,6 +1,6 @@
 const asyncHandler = require('../middleware/async')
 const ErrorResponse = require('../utilities/errorResponse')
-const Permission = require('../utilities/permission')
+const permission = require('../utilities/permission')
 const Booking = require('../models/Booking')
 
 // @desc    Get all bookings
@@ -14,7 +14,7 @@ exports.getBookings = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/bookings/:id
 // @access  Private or Private/Admin
 exports.getBooking = asyncHandler(async (req, res, next) => {
-  Permission(req, res, next, Booking, req.params.id)
+  permission(req, res, next, Booking, req.params.id)
     const booking = await Booking.findById(req.params.id)
   
     if (!booking) {
@@ -31,10 +31,10 @@ exports.getBooking = asyncHandler(async (req, res, next) => {
 // @access  Private
 exports.getLoggedInBookings = asyncHandler(async (req, res, next) => {
     const bookings = await Booking.find({ user_id: req.user.id })
-  
+
     if (!bookings) {
       return next(
-        new ErrorResponse(`No booking with that user id of ${req.params.id}`)
+        new ErrorResponse(`No booking with that user id of ${req.user.id}`)
       )
     }
   
@@ -71,7 +71,7 @@ exports.createBooking = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/bookings/:id
 // @access  Private or Private/Admin
 exports.updateBooking = asyncHandler(async (req, res, next) => {
-    Permission(req, res, next, Booking, req.params.id)
+    permission(req, res, next, Booking, req.params.id)
     const booking = await Booking.findByIdAndUpdate(req.params.id, {...req.body, modified_by: req.user.id}, {
         new: true,
         runValidators: true
@@ -87,7 +87,7 @@ exports.updateBooking = asyncHandler(async (req, res, next) => {
 // @route   DELETE /api/v1/bookings/:id
 // @access  Private or Private/Admin
 exports.deleteBooking = asyncHandler(async (req, res, next) => {
-  Permission(req, res, next, Booking, req.params.id)  
+  permission(req, res, next, Booking, req.params.id)  
   let booking = await Booking.findOne({ _id: req.params.id })
 
     if (!booking) {

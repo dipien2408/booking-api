@@ -23,7 +23,7 @@ const BookingSchema = new Schema(
       default: false
     },
   },
-  { timestamps: true }
+  { toJSON: { virtuals: true }, toObject: { virtuals: true }, timestamps: true }
 );
 
 module.exports =  mongoose.model("Booking", BookingSchema);

@@ -1,6 +1,6 @@
 const ErrorResponse = require('./errorResponse')
 
-const Permission = async (req, res, next, model, id) => {
+const permission = async (req, res, next, model, id) => {
     let modelData = await model.findById(id);
     if(req.user.role !== "admin" && req.user.id !== modelData.user_id) {
         return next(
@@ -9,4 +9,4 @@ const Permission = async (req, res, next, model, id) => {
     }
 }
 
-module.exports = Permission;
+module.exports = permission;

@@ -25,7 +25,9 @@ exports.getUser = asyncHandler(async (req, res, next) => {
 // @route   POST /api/v1/auth/users
 // @access  Private/Admin
 exports.createUser = asyncHandler(async (req, res, next) => {
-  const user = await User.create(req.body)
+  selectedField = ["userName", "email", "password", "phone", "img", "role"]
+  let data = filterData(selectedField, req.body);
+  const user = await User.create(data)
 
   res.status(201).json({ success: true, data: user })
 })
@@ -34,10 +36,10 @@ exports.createUser = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/auth/users/:id
 // @access  Private/Admin
 exports.updateUser = asyncHandler(async (req, res, next) => {
-  req.body.password = ''
-  delete req.body.password
+  selectedField = ["userName", "email", "phone", "img", "role"]
+  let data = filterData(selectedField, req.body);
 
-  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+  const user = await User.findByIdAndUpdate(req.params.id, data, {
     new: true,
     runValidators: true,
     context: 'query'

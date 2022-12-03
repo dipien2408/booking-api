@@ -17,7 +17,7 @@ const HotelSchema = new Schema(
     
     img: {
         type: String,
-        required: true,
+        default: 'https://firebasestorage.googleapis.com/v0/b/cnpm-30771.appspot.com/o/no-user.png?alt=media&token=517e08ab-6aa4-42eb-9547-b1b10f17caf0',
     },
     rating: {
         type: Number,

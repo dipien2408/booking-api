@@ -22,7 +22,7 @@ router
 
 router
   .route('/:id')
-  .get(getUser)
+  .get(protect, authorize('admin'), getUser)
   .put(protect, authorize('admin'), updateUser)
   .delete(protect, authorize('admin'), deleteUser)
 

@@ -16,7 +16,7 @@ exports.register = asyncHandler(async (req, res, next) => {
   user = await User.create({
     userName,
     email,
-    password
+    password,
   })
 
   sendTokenResponse(user, 200, res)

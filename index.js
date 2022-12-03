@@ -48,7 +48,7 @@ app.use(cors({
 
 
 
-const versionOne = (routeName) => `api/v1/${routeName}`
+const versionOne = (routeName) => `/api/v1/${routeName}`
 
 //routes
 app.use(versionOne('auth'), authRoutes)
