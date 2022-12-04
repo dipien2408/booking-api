@@ -19,7 +19,7 @@ router.get('/', advancedResults(RoomType), getRoomTypes)
 router.get('/:id', getRoomType)
 router.post('/', protect, authorize('admin'), createRoomType)
 router.put('/:id', protect, authorize('admin'), updateRoomType)
-router.put('/:id', protect, authorize('admin'), updateRoomTypeStatus)
+router.put('/status/:id', protect, authorize('admin'), updateRoomTypeStatus)
 router.delete('/:id', protect, authorize('admin'), deleteRoomType)
 
 module.exports = router

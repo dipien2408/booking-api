@@ -6,6 +6,7 @@ const {
   getHotel,
   createHotel,
   updateHotel,
+  updateHotelRating,
   updateHotelStatus,
   deleteHotel,
 } = require('../controllers/hotels')
@@ -19,7 +20,8 @@ router.get('/', advancedResults(Hotel), getHotels)
 router.get('/:id', getHotel)
 router.post('/', protect, authorize('admin'), createHotel)
 router.put('/:id', protect, authorize('admin'), updateHotel)
-router.put('/:id', protect, authorize('admin'), updateHotelStatus)
+router.put('/rating/:id', protect, updateHotelRating)
+router.put('/status/:id', protect, authorize('admin'), updateHotelStatus)
 router.delete('/:id', protect, authorize('admin'), deleteHotel)
 
 module.exports = router

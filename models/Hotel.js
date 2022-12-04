@@ -24,6 +24,11 @@ const HotelSchema = new Schema(
         min: 0,
         max: 5,
     },
+    ratingHistory: [{
+      type: Number,
+      min: 0,
+      max: 5
+    }],
     status: {
       type: String,
       enum: ['Active', 'Inactive'],
@@ -40,5 +45,14 @@ const HotelSchema = new Schema(
   },
   { timestamps: true }
 );
+
+HotelSchema.virtual('rooms', {
+  ref: 'Room',
+  localField: '_id',
+  foreignField: 'hotel_id',
+  justOne: false,
+
+  options: { sort: { name: -1 } }
+})
 
 module.exports = mongoose.model("Hotel", HotelSchema);

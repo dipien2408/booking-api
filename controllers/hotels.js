@@ -1,5 +1,7 @@
 const asyncHandler = require('../middleware/async')
 const ErrorResponse = require('../utilities/errorResponse')
+const filterData = require('../utilities/filterData')
+
 const Hotel = require('../models/Hotel')
 
 // @desc    Get all hotels
@@ -14,6 +16,7 @@ exports.getHotels = asyncHandler(async (req, res, next) => {
 // @access  Public
 exports.getHotel = asyncHandler(async (req, res, next) => {
   const hotel = await Hotel.findById(req.params.id)
+    .populate('rooms')
 
   if (!hotel) {
     return next(
@@ -28,8 +31,11 @@ exports.getHotel = asyncHandler(async (req, res, next) => {
 // @route   POST /api/v1/hotels/
 // @access  Private/Admin
 exports.createHotel = asyncHandler(async (req, res, next) => {
+  selectedField = ["name", "desc", "img"]
+  let data = filterData(selectedField, req.body);
+
   const hotel = await Hotel.create({
-    ...req.body,
+    ...data,
     created_by: req.user.id
   })
 
@@ -40,7 +46,10 @@ exports.createHotel = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/hotels
 // @access  Private/Admin
 exports.updateHotel = asyncHandler(async (req, res, next) => {
-  const hotel = await Hotel.findByIdAndUpdate(req.params.id, {...req.body, modified_by: req.user.id}, {
+  selectedField = ["name", "desc", "img"]
+  let data = filterData(selectedField, req.body);
+
+  const hotel = await Hotel.findByIdAndUpdate(req.params.id, {...data, modified_by: req.user.id}, {
     new: true,
     runValidators: true,
     context: 'query'
@@ -55,7 +64,7 @@ exports.updateHotel = asyncHandler(async (req, res, next) => {
 })
 
 // @desc    Update single hotel status
-// @route   PUT /api/v1/hotels/:id
+// @route   PUT /api/v1/hotels/status/:id
 // @access  Private/Admin
 exports.updateHotelStatus = asyncHandler(async (req, res, next) => {
   const hotel = await Hotel.findByIdAndUpdate(req.params.id, {status: req.body.status, modified_by: req.user.id}, {
@@ -69,6 +78,25 @@ exports.updateHotelStatus = asyncHandler(async (req, res, next) => {
       new ErrorResponse(`No hotel with that id of ${req.params.id}`)
     )
 
+  res.status(200).json({ success: true, data: hotel })
+})
+
+// @desc    Update hotel rating
+// @route   PUT /api/v1/hotels/rating/:id
+// @access  Private
+exports.updateHotelRating = asyncHandler(async (req, res, next) => {
+  const hotel = await Hotel.findById(req.params.id)
+
+  if (!hotel)
+    return next(
+      new ErrorResponse(`No hotel with that id of ${req.params.id}`)
+  )
+
+  hotel.ratingHistory.push(req.body.rating);
+  hotel.rating = hotel.ratingHistory.reduce((a, b) => a + b, 0) / hotel.ratingHistory.length;
+
+  await hotel.save();
+  
   res.status(200).json({ success: true, data: hotel })
 })
 

@@ -1,5 +1,6 @@
 const asyncHandler = require('../middleware/async')
 const ErrorResponse = require('../utilities/errorResponse')
+const filterData = require('../utilities/filterData')
 const RoomType = require('../models/RoomType')
 
 // @desc    Get all Room Type
@@ -14,6 +15,7 @@ exports.getRoomTypes = asyncHandler(async (req, res, next) => {
 // @access  Public
 exports.getRoomType = asyncHandler(async (req, res, next) => {
   const roomType = await RoomType.findById(req.params.id)
+    .populate('rooms');
 
   if (!roomType) {
     return next(
@@ -28,8 +30,11 @@ exports.getRoomType = asyncHandler(async (req, res, next) => {
 // @route   POST /api/v1/roomTypes/
 // @access  Private/Admin
 exports.createRoomType = asyncHandler(async (req, res, next) => {
+  selectedField = ["title", "description"]
+  let data = filterData(selectedField, req.body);
+  
   const roomType = await RoomType.create({
-    ...req.body,
+    ...data,
     created_by: req.user.id
   })
 
@@ -40,7 +45,10 @@ exports.createRoomType = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/roomTypes/:id
 // @access  Private/Admin
 exports.updateRoomType = asyncHandler(async (req, res, next) => {
-  const roomType = await RoomType.findByIdAndUpdate(req.params.id, {...req.body, modified_by: req.user.id}, {
+  selectedField = ["title", "description"]
+  let data = filterData(selectedField, req.body);
+
+  const roomType = await RoomType.findByIdAndUpdate(req.params.id, {...data, modified_by: req.user.id}, {
     new: true,
     runValidators: true,
     context: 'query'
@@ -55,7 +63,7 @@ exports.updateRoomType = asyncHandler(async (req, res, next) => {
 })
 
 // @desc    Update single Room Type status
-// @route   PUT /api/v1/roomTypes
+// @route   PUT /api/v1/roomTypes/status/:id
 // @access  Private/Admin
 exports.updateRoomTypeStatus = asyncHandler(async (req, res, next) => {
   const roomType = await RoomType.findByIdAndUpdate(req.params.id, {status: req.body.status, modified_by: req.user.id}, {

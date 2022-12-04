@@ -34,4 +34,13 @@ const RoomTypeSchema = new Schema(
   { timestamps: true }
 )
 
+RoomTypeSchema.virtual('rooms', {
+  ref: 'Room',
+  localField: '_id',
+  foreignField: 'hotel_id',
+  justOne: false,
+
+  options: { sort: { hotel_id: -1 } }
+})
+
 module.exports = mongoose.model('RoomType', RoomTypeSchema)

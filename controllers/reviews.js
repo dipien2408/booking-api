@@ -1,6 +1,8 @@
 const asyncHandler = require('../middleware/async')
 const ErrorResponse = require('../utilities/errorResponse')
 const permission = require('../utilities/permission')
+const filterData = require('../utilities/filterData')
+
 const Review = require('../models/Review')
 const Room = require('../models/Room')
 
@@ -16,7 +18,7 @@ exports.getReviews = asyncHandler(async (req, res, next) => {
 // @access  Public
 exports.getReviewsByRoomId = asyncHandler(async (req, res, next) => {
   const reviews = await Review.find({ room_id: req.params.roomId })
-    .populate('user_id')
+    .populate({ path: 'user_id', select: 'userName img' })
     .sort('-createdAt')
 
   if (!reviews) {
@@ -44,7 +46,7 @@ exports.createReview = asyncHandler(async (req, res, next) => {
     )
   }
   const review = await Review.create({
-    ...req.body,
+    content: req.body.content,
     room_id: req.params.roomId,
     user_id: req.user._id
   })
@@ -54,10 +56,10 @@ exports.createReview = asyncHandler(async (req, res, next) => {
 
 // @desc    Update review
 // @route   PUT /api/v1/reviews/:id
-// @access  Private or Private/Admin
+// @access  Private 
 exports.updateReview = asyncHandler(async (req, res, next) => {
   permission(req, res, next, Review, req.params.id)
-  let review = await Review.findById(req.params.id).populate('room_id')
+  let review = await Review.findById(req.params.id)
 
   if (!review) {
     return next(
@@ -68,10 +70,8 @@ exports.updateReview = asyncHandler(async (req, res, next) => {
   if (
     review.user_id.toString() == req.user._id.toString()
   ) {
-    review = await Review.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true
-    })
+    review.content = req.body.content;
+    await review.save();
 
     res.status(200).json({ success: true, data: review })
   } else {
@@ -86,7 +86,7 @@ exports.updateReview = asyncHandler(async (req, res, next) => {
 // @access  Private or Private/Admin
 exports.deleteReview = asyncHandler(async (req, res, next) => {
   permission(req, res, next, Review, req.params.id)
-  let review = await Review.findById(req.params.id).populate('room_id')
+  let review = await Review.findById(req.params.id)
 
   if (!review) {
     return next(
