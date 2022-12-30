@@ -1,0 +1,6 @@
+Admin: admin@gmail.com  123456
+Admin: moderator@gmail.com 123456
+User: jhon_nathan@gmail.com 123456
+User: david2234@gmail.com 123456
+User: nguyen.dp@gmail.com 123456
+User: jane.f@gmail.com 123456

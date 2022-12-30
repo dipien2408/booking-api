@@ -31,7 +31,7 @@ exports.getHotel = asyncHandler(async (req, res, next) => {
 // @route   POST /api/v1/hotels/
 // @access  Private/Admin
 exports.createHotel = asyncHandler(async (req, res, next) => {
-  selectedField = ["name", "desc", "img"]
+  selectedField = ["name", "desc", "img", "address"]
   let data = filterData(selectedField, req.body);
 
   const hotel = await Hotel.create({
@@ -46,7 +46,7 @@ exports.createHotel = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/hotels
 // @access  Private/Admin
 exports.updateHotel = asyncHandler(async (req, res, next) => {
-  selectedField = ["name", "desc", "img"]
+  selectedField = ["name", "desc", "img", "address"]
   let data = filterData(selectedField, req.body);
 
   const hotel = await Hotel.findByIdAndUpdate(req.params.id, {...data, modified_by: req.user.id}, {

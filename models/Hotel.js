@@ -24,6 +24,10 @@ const HotelSchema = new Schema(
         min: 0,
         max: 5,
     },
+    address: {
+      type: String,
+      enum: ['Ha Noi', 'Ho Chi Minh', 'Da Nang']
+    },
     ratingHistory: [{
       type: Number,
       min: 0,

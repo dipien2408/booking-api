@@ -20,6 +20,7 @@ const advancedResults = (
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, (match) => `$${match}`)
   
     // Find resource
+    console.log(Object.keys(JSON.parse(queryStr)).length)
     query = model.find(JSON.parse(queryStr))
   
     // Select Fields
@@ -55,8 +56,8 @@ const advancedResults = (
       })
     }
   
-    const results = await query
-  
+    const results = await query.clone()
+    
     // Pagination result
     const pagination = {}
   
